@@ -1,0 +1,5 @@
+{
+  "title": "People",
+  "pages": ["time-off", "working-hours", "wellbeing", "energy"],
+  "defaultOpen": true
+}
