@@ -1,5 +1,6 @@
 {
   "title": "Handbook",
   "description": "The description of root folder (optional)",
+   "pages": ["opportunities", "long-term-vision","finance-and-operation","people","security","future-of-gtdn","practilatiies","docks-edit"],
   "root": true
 }

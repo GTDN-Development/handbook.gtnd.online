@@ -1,0 +1,202 @@
+---
+title: "Documentation & Sidebar Structure"
+description: "Understanding how the sidebar navigation is organized and how to create categories and nested links"
+---
+
+## Sidebar Structure Overview
+
+The sidebar navigation has a **three-level hierarchy**:
+
+1. **Categories** (top-level sections like "Handbook" or "Getting Started")
+2. **Sections** (groups of related pages within a category)
+3. **Pages** (individual documentation pages, with optional sub-pages)
+
+## Important: Navigation vs File System
+
+**Critical distinction**: The sidebar hierarchy is purely for navigation organization. From a URL and file system perspective, **all pages exist at the same category level**.
+
+For example, even if you have nested navigation like:
+```
+Installation
+├── Quick Start
+├── Install with npm
+    ├── Setup Guide
+    ├── Troubleshooting
+```
+
+The actual file structure is flat:
+```
+src/content/example/
+├── quick-start.mdx          → /example/quick-start
+├── install-npm.mdx          → /example/install-npm
+├── setup-guide.mdx          → /example/setup-guide
+├── troubleshooting.mdx      → /example/troubleshooting
+```
+
+**Sub-pages are only visual navigation hierarchy - not URL or file system hierarchy.**
+
+## Basic Structure
+
+### Level 1: Categories
+Categories appear in the dropdown at the top of the sidebar. Each category is a complete documentation section defined in `/src/config/categories.ts`.
+
+### Level 2: Sections
+Within each category, pages are organized into named sections that group related content together.
+
+### Level 3: Pages
+Individual pages within sections. Pages can have nested sub-pages for better navigation organization, but all files remain at the same directory level.
+
+## Creating Categories
+
+Categories are created in `/src/config/categories.ts` and reference separate navigation configuration files:
+
+```typescript
+// /src/config/categories.ts
+export const categories: Category[] = [
+  {
+    name: "Getting Started",
+    slug: "getting-started",
+    icon: FlameIcon,
+    items: gettingStartedNavigation, // imported from separate file
+  },
+  {
+    name: "Handbook",
+    slug: "handbook",
+    icon: BookIcon,
+    items: handbookNavigation, // imported from separate file
+  },
+];
+```
+
+Each category references a navigation configuration (like `handbookNavigation`) that's defined in a separate file in the same directory.
+
+## Creating Navigation Structure
+
+Navigation structures are defined in individual config files (e.g., `/src/config/handbook.ts`):
+
+```typescript
+export const handbookNavigation: SidebarNavigationType = {
+  sectionKey: {
+    name: "Display Name for Section",
+    items: [
+      // pages go here
+    ],
+  },
+}
+```
+
+### Adding Pages
+
+#### Simple Pages
+Basic pages have a `name` and `href`:
+
+```typescript
+{
+  name: "Page Title",
+  href: "/category/page-slug",
+}
+```
+
+#### Pages with Sub-pages
+Pages can have nested children for better navigation organization:
+
+```typescript
+{
+  name: "Parent Page",
+  href: "/category/parent-page",
+  children: [
+    {
+      name: "Sub-page 1",
+      href: "/category/sub-page-1", // Note: flat URL structure
+    },
+    {
+      name: "Sub-page 2", 
+      href: "/category/sub-page-2", // Note: flat URL structure
+    },
+  ],
+}
+```
+
+**Remember**: Even though "Sub-page 1" appears nested under "Parent Page" in the sidebar, the actual files and URLs are at the same level:
+- `src/content/category/parent-page.mdx` → `/category/parent-page`
+- `src/content/category/sub-page-1.mdx` → `/category/sub-page-1`
+- `src/content/category/sub-page-2.mdx` → `/category/sub-page-2`
+
+## Complete Example
+
+Here's a full navigation structure showing all features:
+
+```typescript
+export const exampleNavigation: SidebarNavigationType = {
+  introduction: {
+    name: "Introduction",
+    items: [
+      {
+        name: "Overview",
+        href: "/example/overview",
+      },
+      {
+        name: "Features",
+        href: "/example/features",
+      },
+    ],
+  },
+  installation: {
+    name: "Installation",
+    items: [
+      {
+        name: "Quick Start",
+        href: "/example/quick-start",
+      },
+      {
+        name: "Install with npm",
+        href: "/example/install-npm",
+        children: [
+          {
+            name: "Setup Guide",
+            href: "/example/setup", // Flat URL structure
+          },
+          {
+            name: "Troubleshooting",
+            href: "/example/troubleshooting", // Flat URL structure
+          },
+        ],
+      },
+    ],
+  },
+};
+```
+
+This creates:
+- **2 sections**: "Introduction" and "Installation"
+- **4 main pages**: Overview, Features, Quick Start, Install with npm
+- **2 sub-pages**: Setup Guide and Troubleshooting (visually nested under Install with npm)
+
+**File structure for this example:**
+```
+src/content/example/
+├── overview.mdx
+├── features.mdx
+├── quick-start.mdx
+├── install-npm.mdx
+├── setup.mdx              # Appears nested but file is at root level
+└── troubleshooting.mdx    # Appears nested but file is at root level
+```
+
+## Key Rules
+
+1. **Section keys** (`introduction`, `installation`) are internal identifiers - they don't appear in the UI
+2. **Display names** (`"Introduction"`, `"Installation"`) are what users see in the sidebar
+3. **URLs must match** the file path exactly: `/category/page-slug` → `src/content/category/page-slug.mdx`
+4. **File system is flat** - all MDX files go directly in the category folder, regardless of navigation nesting
+5. **Navigation nesting is visual only** - use it to group related content for better UX
+6. **Keep it simple** - only nest when you have related sub-topics that benefit from visual grouping
+
+## Steps to Add a New Category
+
+1. **Create directory**: `src/content/new-category/`
+2. **Create navigation config**: `src/config/new-category.ts`
+3. **Create route**: `src/app/new-category/[slug]/page.tsx`
+4. **Register in categories**: Add to `src/config/categories.ts`
+
+Need help? Check out the other handbook pages for step-by-step guides on adding categories and pages.

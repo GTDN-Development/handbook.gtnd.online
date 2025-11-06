@@ -1,0 +1,52 @@
+---
+title: "Adding a New Page and cattegory"
+description: "Quick guide on how to add new pages to this documentation site"
+---
+
+## Step 1: Clone Repository
+
+Clone the repository from the link in the navbar (top right corner).
+
+```bash
+git clone [repository-url]
+cd docs.gtdn.online
+```
+
+## Step 2: Create New Page
+
+all pages are stored in the `content/docs` directory. Navigate to the appropriate folder where you want to add the new page.
+for example, to add a new page under the "Handbook/people" section, go to:
+```bash
+content/docs/handbook/people/my-new-awsome-page.mdx <----- your new page
+```
+your page structure should look like this:
+```bash
+---
+title: "my new awsome page"
+description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit."
+---
+this is my new awsome page content.
+
+## Cards
+
+<Cards>
+  <Card title="Learn more about GTDN" href="https://GTDN.online" />
+</Cards>
+```
+## Step 3: Creating category
+if you need to create a new cattegory, go to:
+```bash
+content/docs/handbook/my-new-awsome-folder <----- your new folder(category)
+```
+and create a `meta.json` file inside the folder with the following structure:
+```json
+{
+  "title": "My New Awsome Folder", <--- title of the folder
+  "pages": ["my-new-awsome-page"], <---order of pages in this folder
+  "defaultOpen": true <--- whether the folder is expanded by default in the sidebar
+  "root": false <--- whether this is a root folder
+}
+```
+
+
+That's it! Your new page will appear in the sidebar and be accessible via the URL.
