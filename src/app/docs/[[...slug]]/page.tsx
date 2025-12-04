@@ -15,10 +15,15 @@ export default async function Page(props: PageProps<"/docs/[[...slug]]">) {
 
   return (
     <DocsPage toc={page.data.toc} full={page.data.full}>
-      <DocsTitle>{page.data.title}</DocsTitle>
-      <DocsDescription className="mb-0 pb-0">{page.data.description}</DocsDescription>
-      <div className="flex flex-row items-center gap-2 border-b pb-6">
-        <LLMCopyButton markdownUrl={`${page.url}.mdx`} />
+      <div className="flex flex-col gap-4">
+        <div className="flex items-center justify-between gap-4">
+          <DocsTitle>{page.data.title}</DocsTitle>
+          <div className="hidden lg:block">
+            <LLMCopyButton markdownUrl={`${page.url}.mdx`} />
+          </div>
+        </div>
+
+        <DocsDescription>{page.data.description}</DocsDescription>
       </div>
       <DocsBody>
         <MDX

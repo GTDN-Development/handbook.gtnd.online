@@ -6,7 +6,7 @@ export function baseOptions(): BaseLayoutProps {
     nav: {
       title: siteConfig.name,
     },
-    githubUrl: "https://github.com",
+    githubUrl: siteConfig.gitHubUrl,
     themeSwitch: {
       mode: "light-dark-system",
     },

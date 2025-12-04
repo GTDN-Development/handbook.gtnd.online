@@ -1,6 +1,6 @@
 {
   "title": "UI Framework",
-  "description": "Front-end components and guidelines",
+  "description": "Components & guides for FE",
   "pages": ["introduction", "general", "guides", "components", "layouts", "LLMs", "legal"],
   "icon": "Palette",
   "root": true

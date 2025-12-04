@@ -1,6 +1,6 @@
 {
   "title": "Shoptet",
-  "description": "How to handle contracts for shoptet platform",
+  "description": "Guides for shoptet platform",
   "pages": ["introduction", "general", "guides"],
   "icon": "ShoppingCart",
   "root": true

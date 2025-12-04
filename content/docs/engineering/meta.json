@@ -1,6 +1,6 @@
 {
   "title": "Engineering",
-  "description": "How we cook overall",
+  "description": "All engineering docs",
   "pages": [
     "introduction",
     "general",
@@ -11,6 +11,6 @@
     "our-infra",
     "admin-ops"
   ],
-  "icon": "Code",
+  "icon": "Terminal",
   "root": true
 }
