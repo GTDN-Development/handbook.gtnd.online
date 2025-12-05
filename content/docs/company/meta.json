@@ -1,7 +1,15 @@
 {
   "title": "Company & Backoffice",
   "description": "About us, our mission, culture, and how we operate.",
-  "pages": ["welcome", "about-us", "how-we-work", "bussiness", "people-ops", "processes", "guides"],
+  "pages": [
+    "handbook",
+    "about-us",
+    "bussiness",
+    "how-we-work",
+    "people-ops",
+    "processes",
+    "guides"
+  ],
   "icon": "Building2",
   "root": true
 }

@@ -49,7 +49,7 @@ export default async function Page(props: PageProps<"/docs/[[...slug]]">) {
 
         <DocsDescription>{page.data.description}</DocsDescription>
       </div>
-      <DocsBody>
+      <DocsBody className="pb-16 sm:pb-24">
         <MDX
           components={getMDXComponents({
             // this allows you to link to other pages with relative file paths

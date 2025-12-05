@@ -1,0 +1,56 @@
+---
+title: "How to edit this handbook"
+description: "This is a simple guide, how to properly contribute into this handbook project."
+---
+
+import { GitHubLink } from "@/components/ui/github-link";
+
+If you want to contribute, you have to be part of our GitHub organization first. Of course, you should also be familiar with the rest of our guidelines and have basic knowledge of how we make software. And of course, know what Markdown and MDX are and how to write them.
+
+## Link to the repo
+
+<GitHubLink />
+
+## Tech stack
+
+This project is built with Next.js and the Fumadocs documentation framework. More information about both and how they work can be found in their documentation.
+
+[Next.js](https://nextjs.org/)
+
+[Fumadocs](https://fumadocs.dev/)
+
+## Process
+
+In this project, we are using only the main branch and feature branches to merge them directly into main. There is no need to overcomplicate things.
+
+1. **Clone the repo**
+
+2. **Do the changes**
+
+3. **Push it into its own branch with descriptive name**
+
+4. **Create a pull request and tag someone to review it**
+
+## Structure
+
+Fumadocs has great documentation (who would have thought) and I do not want to repeat things they described really well in their docs about how their routing works, etc. So I'll be very brief here.
+
+[Fumadocs Page Slugs & Page Tree](https://fumadocs.dev/docs/ui/page-conventions)
+
+Folder structure inside `/content/docs/` defines your documentation routes.
+
+In our case, we have divided the whole handbook into separate sections (Company, Marketing, Engineering, etc. inside the dropdown menu). This is defined by the folders inside `/content/docs/` and described inside `meta.json` ([more info about meta.json](https://fumadocs.dev/docs/ui/page-conventions#meta)).
+
+## Adding a new page
+
+Adding a new page is as simple as creating a new `.mdx` file within the tree inside `/content/docs/`.
+
+Each page must start with frontmatter and include at least a `title` inside
+
+```mdx
+---
+title: "My awesome page"
+---
+
+## This is heading level 2
+```

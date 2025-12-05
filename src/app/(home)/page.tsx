@@ -17,7 +17,7 @@ export default function HomePage() {
       </div>
       <p className="mt-12">
         You can open{" "}
-        <Link href="/docs/company/welcome/introduction" className="font-medium underline">
+        <Link href="/docs/company/handbook/introduction" className="font-medium underline">
           /docs
         </Link>{" "}
         and see the documentation.
