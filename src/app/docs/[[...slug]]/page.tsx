@@ -5,6 +5,10 @@ import { getMDXComponents } from "@/mdx-components";
 import type { Metadata } from "next";
 import { createRelativeLink } from "fumadocs-ui/mdx";
 import { LLMCopyButton } from "@/components/page-actions";
+import { findNeighbour } from "fumadocs-core/page-tree";
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
+import { ArrowLeftIcon, ArrowRightIcon } from "lucide-react";
 
 export default async function Page(props: PageProps<"/docs/[[...slug]]">) {
   const params = await props.params;
@@ -12,14 +16,42 @@ export default async function Page(props: PageProps<"/docs/[[...slug]]">) {
   if (!page) notFound();
 
   const MDX = page.data.body;
+  const neighbours = findNeighbour(source.pageTree, page.url);
 
   return (
     <DocsPage toc={page.data.toc} full={page.data.full}>
       <div className="flex flex-col gap-4">
         <div className="flex items-center justify-between gap-4">
           <DocsTitle>{page.data.title}</DocsTitle>
-          <div className="hidden lg:block">
+          <div className="hidden gap-2 lg:flex">
             <LLMCopyButton markdownUrl={`${page.url}.mdx`} />
+
+            {neighbours.previous && (
+              <Button
+                variant="secondary"
+                size="icon"
+                className="extend-touch-target ml-auto size-8 shadow-none md:size-7"
+                asChild
+              >
+                <Link href={neighbours.previous.url}>
+                  <ArrowLeftIcon />
+                  <span className="sr-only">Previous</span>
+                </Link>
+              </Button>
+            )}
+            {neighbours.next && (
+              <Button
+                variant="secondary"
+                size="icon"
+                className="extend-touch-target size-8 shadow-none md:size-7"
+                asChild
+              >
+                <Link href={neighbours.next.url}>
+                  <span className="sr-only">Next</span>
+                  <ArrowRightIcon />
+                </Link>
+              </Button>
+            )}
           </div>
         </div>
 
