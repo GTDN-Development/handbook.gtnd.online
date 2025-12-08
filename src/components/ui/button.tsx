@@ -1,6 +1,6 @@
 import { cva, type VariantProps } from "class-variance-authority";
 import { Slot } from "@radix-ui/react-slot";
-import { cn } from "@/lib/cn";
+import { cn } from "@/lib/utils";
 
 const variants = {
   primary: "bg-fd-primary text-fd-primary-foreground hover:bg-fd-primary/80",

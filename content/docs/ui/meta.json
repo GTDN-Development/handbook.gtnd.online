@@ -1,0 +1,7 @@
+{
+  "title": "UI",
+  "description": "Components & guides for FE",
+  "pages": ["introduction", "general", "guides", "components", "layouts", "utils", "LLMs", "legal"],
+  "icon": "Palette",
+  "root": true
+}
