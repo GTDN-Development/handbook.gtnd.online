@@ -17,7 +17,7 @@ export function DescriptionTerm({ className, ...props }: React.ComponentPropsWit
     <dt
       {...props}
       className={cn(
-        "border-border text-foreground/80 col-start-1 border-t pt-3 first:border-none sm:border-t sm:py-3",
+        "text-foreground/80 col-start-1 border-t pt-3 first:border-none sm:border-t sm:py-3",
         className
       )}
     />

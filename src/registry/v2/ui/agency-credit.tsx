@@ -1,4 +1,4 @@
-export function AgencyCredit(props: React.ComponentProps<"p">) {
+export function AgencyCredit(props: Omit<React.ComponentProps<"p">, "children">) {
   return (
     <p {...props} style={{ color: "currentColor", ...props.style }}>
       <span style={{ opacity: "0.6" }}>Created by </span>

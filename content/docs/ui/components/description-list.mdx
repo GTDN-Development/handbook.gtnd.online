@@ -1,6 +1,80 @@
 ---
 title: "Description list"
-description: "Lorem ipsum dolor"
+description: "Turn the data from one table row into mobile friendly version."
 ---
 
-## Description list
+import { Step, Steps } from 'fumadocs-ui/components/steps';
+
+import { Example } from "@/components/example"
+import { DescriptionList, DescriptionTerm, DescriptionDetails } from "@/registry/v2/ui/description-list"
+
+<Example pattern={false}>
+    <div className="w-full max-w-xl">
+      <DescriptionList>
+        <DescriptionTerm>Full Name</DescriptionTerm>
+        <DescriptionDetails>John Alexander Doe</DescriptionDetails>
+        <DescriptionTerm>Email Address</DescriptionTerm>
+        <DescriptionDetails>john.doe@example.com</DescriptionDetails>
+        <DescriptionTerm>Phone Number</DescriptionTerm>
+        <DescriptionDetails>+1 (555) 123-4567</DescriptionDetails>
+        <DescriptionTerm>Date of Birth</DescriptionTerm>
+        <DescriptionDetails>January 15, 1985</DescriptionDetails>
+        <DescriptionTerm>Occupation</DescriptionTerm>
+        <DescriptionDetails>Senior Software Engineer</DescriptionDetails>
+        <DescriptionTerm>Location</DescriptionTerm>
+        <DescriptionDetails>San Francisco, CA</DescriptionDetails>
+      </DescriptionList>
+    </div>
+</Example>
+
+## Usage
+
+```tsx
+import {
+  DescriptionList,
+  DescriptionTerm,
+  DescriptionDetails
+} from "@/components/ui/description-list"
+```
+
+```tsx
+<DescriptionList>
+  <DescriptionTerm>Full Name</DescriptionTerm>
+  <DescriptionDetails>John Alexander Doe</DescriptionDetails>
+
+  <DescriptionTerm>Email Address</DescriptionTerm>
+  <DescriptionDetails>john.doe@example.com</DescriptionDetails>
+
+  <DescriptionTerm>Phone Number</DescriptionTerm>
+  <DescriptionDetails>+1 (555) 123-4567</DescriptionDetails>
+
+  <DescriptionTerm>Date of Birth</DescriptionTerm>
+  <DescriptionDetails>January 15, 1985</DescriptionDetails>
+
+  <DescriptionTerm>Occupation</DescriptionTerm>
+  <DescriptionDetails>Senior Software Engineer</DescriptionDetails>
+
+  <DescriptionTerm>Location</DescriptionTerm>
+  <DescriptionDetails>San Francisco, CA</DescriptionDetails>
+</DescriptionList>
+```
+
+## Instalation
+
+<Steps>
+    <Step>
+        **Create the component file**
+
+        ```bash
+        touch src/components/ui/description-list.tsx
+        ```
+    </Step>
+    <Step>
+        **Copy & paste the source code**
+
+        <include cwd lang="tsx" meta='title="components/ui/description-list.tsx"'>
+          src/registry/v2/ui/description-list.tsx
+        </include>
+        Update the import paths to match the project setup.
+    </Step>
+</Steps>

@@ -1,6 +1,87 @@
 ---
 title: "Agency credit"
-description: "Lorem ipsum dolor"
+description: "A footer component that displays agency attribution with a link"
 ---
 
-## Agency credit
+import { Example } from "@/components/example"
+import { AgencyCredit } from "@/registry/v2/ui/agency-credit"
+
+<Example>
+    <AgencyCredit />
+</Example>
+
+## Source code
+
+<Tabs items={["React", "HTML"]}>
+  <Tab value="React">
+      ```tsx
+      export function AgencyCredit(props: Omit<React.ComponentProps<"p">, "children">) {
+        return (
+          <p {...props} style={{ color: "currentColor", ...props.style }}>
+            <span style={{ opacity: "0.6" }}>Created by </span>
+            <a
+              href="https://www.gtdn.online/"
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{
+                cursor: "pointer",
+                textDecorationLine: "underline",
+                textDecorationColor: "color-mix(in oklab, currentColor 33%, transparent)",
+                textDecorationThickness: "1px",
+                textUnderlineOffset: "2px",
+              }}
+            >
+              gtdn.online
+              <span
+                style={{
+                  marginLeft: "6px",
+                  opacity: "0.6",
+                  fontSize: "1em",
+                }}
+              >
+                &#8599;
+              </span>
+            </a>
+          </p>
+        );
+      }
+      ```
+  </Tab>
+  <Tab value="HTML">
+      ```html
+      <p style="color: currentColor;">
+        <span style="opacity: 0.6;">Created by </span>
+        <a
+          href="https://www.gtdn.online/"
+          target="_blank"
+          rel="noopener noreferrer"
+          style="
+            cursor: pointer;
+            text-decoration-line: underline;
+            text-decoration-color: color-mix(in oklab, currentColor 33%, transparent);
+            text-decoration-thickness: 1px;
+            text-underline-offset: 2px;
+          "
+        >
+          gtdn.online
+          <span
+            style="
+              margin-left: 6px;
+              opacity: 0.6;
+              font-size: 1em;
+            "
+          >
+            &#8599;
+          </span>
+        </a>
+      </p>
+      ```
+  </Tab>
+</Tabs>
+
+## Usage (React)
+```tsx
+import { AgencyCredit } from "@/components/ui/agency-credit"
+
+<AgencyCredit />
+```
