@@ -38,7 +38,7 @@ export function Example({
         className,
         "bg-card relative flex min-h-48 overflow-auto rounded-xl border shadow-sm dark:shadow-none",
         pattern &&
-          "bg-[radial-gradient(color-mix(in_oklab,currentColor_12.5%,transparent)_1px,transparent_1px)] bg-size-[20px_20px]",
+          "bg-[radial-gradient(color-mix(in_oklab,currentColor_12.5%,transparent)_1px,transparent_1px)] bg-size-[21px_21px]",
         prose ? "" : "not-prose",
         horizontalAlign === "start" && "justify-start",
         horizontalAlign === "center" && "justify-center",
@@ -51,7 +51,12 @@ export function Example({
     >
       {children}
       {reload && (
-        <Button onClick={handleReload} size="sm" className="absolute top-2 right-2">
+        <Button
+          onClick={handleReload}
+          size="sm"
+          variant={"ghost"}
+          className="absolute top-2 right-2"
+        >
           {/*<span className="sr-only">reload</span>*/}
           <RotateCcwIcon aria-hidden="true" />
           reload
