@@ -1,6 +1,91 @@
 ---
 title: "Motion counter"
-description: "Lorem ipsum dolor"
+description: "Animates numbers smoothly from start to end when entering the viewport"
 ---
 
-## Motion counter
+import { Step, Steps } from "fumadocs-ui/components/steps";
+import { TypeTable } from "fumadocs-ui/components/type-table";
+
+import { Example } from "@/components/example";
+import { MotionCounter } from "@/registry/v2/ui/motion-counter";
+
+<Example reload>
+  <MotionCounter start={0} end={100} decimals={2} className="text-4xl font-bold" />
+</Example>
+
+## Usage
+
+```tsx
+import { MotionCounter } from "@/components/ui/motion-counter";
+```
+
+```tsx
+<MotionCounter start={0} end={100} decimals={2} className="text-4xl font-bold" />
+```
+
+## Installation
+
+<Steps>
+    <Step>
+        **Install the dependencies**
+
+        ```bash
+        npm install motion@latest
+        ```
+    </Step>
+    <Step>
+        **Create the component file**
+
+        ```bash
+        touch src/components/ui/motion-counter.tsx
+        ```
+    </Step>
+    <Step>
+        **Copy & paste the source code**
+
+        <include cwd lang="tsx" meta='title="components/ui/motion-counter.tsx"'>
+          src/registry/v2/ui/motion-counter.tsx
+        </include>
+        Update the import paths to match the project setup.
+    </Step>
+
+</Steps>
+
+## API Reference
+
+The component extends `<motion.div>` and adding following props on top.
+
+<TypeTable
+  type={{
+    start: {
+      description: "Starting number for the counter",
+      type: "number",
+      required: true,
+    },
+    end: {
+      description: "Ending number for the counter",
+      type: "number",
+      required: true,
+    },
+    decimals: {
+      description: "Number of decimal places to display",
+      type: "number",
+      default: "2",
+    },
+    duration: {
+      description: "Duration of the animation in seconds",
+      type: "number",
+      default: "2",
+    },
+    delay: {
+      description: "Delay before animation starts in seconds",
+      type: "number",
+      default: "0",
+    },
+    ease: {
+      description: "Easing function for the animation",
+      type: 'KeyframeOptions["ease"]',
+      default: "[0.25, 1, 0.5, 1]",
+    },
+  }}
+/>

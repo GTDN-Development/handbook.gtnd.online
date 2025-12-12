@@ -51,9 +51,10 @@ export function Example({
     >
       {children}
       {reload && (
-        <Button onClick={handleReload} size="icon" className="absolute top-4 right-5">
-          <span className="sr-only">reload</span>
+        <Button onClick={handleReload} size="sm" className="absolute top-2 right-2">
+          {/*<span className="sr-only">reload</span>*/}
           <RotateCcwIcon aria-hidden="true" />
+          reload
         </Button>
       )}
     </div>

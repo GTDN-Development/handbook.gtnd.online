@@ -3,28 +3,32 @@ title: "Description list"
 description: "Turn the data from one table row into mobile friendly version."
 ---
 
-import { Step, Steps } from 'fumadocs-ui/components/steps';
+import { Step, Steps } from "fumadocs-ui/components/steps";
 
-import { Example } from "@/components/example"
-import { DescriptionList, DescriptionTerm, DescriptionDetails } from "@/registry/v2/ui/description-list"
+import { Example } from "@/components/example";
+import {
+  DescriptionList,
+  DescriptionTerm,
+  DescriptionDetails,
+} from "@/registry/v2/ui/description-list";
 
 <Example pattern={false}>
-    <div className="w-full max-w-xl">
-      <DescriptionList>
-        <DescriptionTerm>Full Name</DescriptionTerm>
-        <DescriptionDetails>John Alexander Doe</DescriptionDetails>
-        <DescriptionTerm>Email Address</DescriptionTerm>
-        <DescriptionDetails>john.doe@example.com</DescriptionDetails>
-        <DescriptionTerm>Phone Number</DescriptionTerm>
-        <DescriptionDetails>+1 (555) 123-4567</DescriptionDetails>
-        <DescriptionTerm>Date of Birth</DescriptionTerm>
-        <DescriptionDetails>January 15, 1985</DescriptionDetails>
-        <DescriptionTerm>Occupation</DescriptionTerm>
-        <DescriptionDetails>Senior Software Engineer</DescriptionDetails>
-        <DescriptionTerm>Location</DescriptionTerm>
-        <DescriptionDetails>San Francisco, CA</DescriptionDetails>
-      </DescriptionList>
-    </div>
+  <div className="w-full max-w-xl">
+    <DescriptionList>
+      <DescriptionTerm>Full Name</DescriptionTerm>
+      <DescriptionDetails>John Alexander Doe</DescriptionDetails>
+      <DescriptionTerm>Email Address</DescriptionTerm>
+      <DescriptionDetails>john.doe@example.com</DescriptionDetails>
+      <DescriptionTerm>Phone Number</DescriptionTerm>
+      <DescriptionDetails>+1 (555) 123-4567</DescriptionDetails>
+      <DescriptionTerm>Date of Birth</DescriptionTerm>
+      <DescriptionDetails>January 15, 1985</DescriptionDetails>
+      <DescriptionTerm>Occupation</DescriptionTerm>
+      <DescriptionDetails>Senior Software Engineer</DescriptionDetails>
+      <DescriptionTerm>Location</DescriptionTerm>
+      <DescriptionDetails>San Francisco, CA</DescriptionDetails>
+    </DescriptionList>
+  </div>
 </Example>
 
 ## Usage
@@ -33,8 +37,8 @@ import { DescriptionList, DescriptionTerm, DescriptionDetails } from "@/registry
 import {
   DescriptionList,
   DescriptionTerm,
-  DescriptionDetails
-} from "@/components/ui/description-list"
+  DescriptionDetails,
+} from "@/components/ui/description-list";
 ```
 
 ```tsx
@@ -77,4 +81,5 @@ import {
         </include>
         Update the import paths to match the project setup.
     </Step>
+
 </Steps>
