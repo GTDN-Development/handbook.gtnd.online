@@ -1,14 +1,28 @@
 ---
 title: "Cloudflare Turnstile"
 description: "Guide to using Cloudflare Turnstile"
+highlight: true
 ---
 
 import { Step, Steps } from "fumadocs-ui/components/steps";
 import { Example } from "@/components/example";
 import { Turnstile } from "@/registry/v2/ui/turnstile";
+import { TypeTable } from "fumadocs-ui/components/type-table";
 
 
-Cloudflare Turnstile need two siteKey and secretKey. You need to render 
+Turnstile is Cloudflare's smart CAPTCHA replacement that validates users without solving puzzles, respects user privacy (no tracking across sites), works seamlessly with modern web applications, and provides enterprise-grade bot protection. Cloudflare Turnstile needs two siteKey and secretKey. You can get those in https://www.cloudflare.com/application-services/products/turnstile/. 
+
+## How It Works
+
+- **Client-side**: User interacts with the Turnstile widget, which generates a token
+- **Form submission**: Token is sent to your server along with form data
+- **Server-side verification**: Your backend validates the token with Cloudflare's API
+- **Response**: Process the form only if verification succeeds
+
+
+
+
+
 
 ## Installation 
 
@@ -28,7 +42,7 @@ Cloudflare Turnstile need two siteKey and secretKey. You need to render
         ```
     </Step>
     <Step>
-        **Copy & paste the source code**
+        **Copy & paste the component source code**
 
         <include cwd lang="tsx" meta='title="components/ui/turnstile.tsx"'>
           src/registry/v2/ui/turnstile.tsx
@@ -38,7 +52,7 @@ Cloudflare Turnstile need two siteKey and secretKey. You need to render
     </Step>
     
     <Step>
-        **Create a file in lib directory**
+        **Create a the verification utility file**
 
         ```bash
         touch src/lib/turnstile.ts
@@ -53,12 +67,18 @@ Cloudflare Turnstile need two siteKey and secretKey. You need to render
     </Step>
     
     <Step>
-        **Add Turnstile Keys into your .env file**
+        **Add environment variables to your .env.local file**
+        c
+        ```bash
+        NEXT_PUBLIC_TURNSTILE_SITE_KEY=your_site_key_here
+        TURNSTILE_SECRET_KEY=your_secret_key_here
+        ```
+        
     </Step>
 </Steps>
 
 
-## Usage in Form
+## Example using React Hook Form
 
 ```tsx
 import { Turnstile } from '@/components/ui/turnstile'
@@ -118,3 +138,33 @@ export async function POST(request: NextRequest) {
   }
 }
 ```
+
+
+## Component API Reference
+
+### Turnstile Props
+
+<TypeTable
+  type={{
+    onSuccess: {
+      description: "Callback when verification succeeds. Receives the token to submit to your backend.",
+      type: "(token: string) => void",
+    },
+    onError: {
+      description: "Callback when verification fails. Clear the token state here.",
+      type: "() => void",
+    },
+    onExpire: {
+      description: "Callback when token expires (after ~5 minutes). Clear the token state.",
+      type: "() => void",
+    },
+    className: {
+      description: "Optional CSS classes for custom styling",
+      type: "string",
+    },
+    ref: {
+      description: "Ref to access widget methods like reset()",
+      type: "React.Ref<TurnstileRef>",
+    },
+  }}
+/>

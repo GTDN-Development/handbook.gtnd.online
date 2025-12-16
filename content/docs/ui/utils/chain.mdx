@@ -1,6 +1,45 @@
 ---
 title: "Chain"
-description: "Lorem ipsum dolor"
+description: "Combines multiple callback functions into a single function that executes them sequentially"
 ---
 
-Lorem ipsum dolor
+import { Step, Steps } from "fumadocs-ui/components/steps";
+
+The `chain` function combines multiple callbacks into one function that calls each in sequence. It safely handles `undefined` callbacks.
+
+
+## Usage
+
+```tsx
+import { chain } from "@/lib/utils";
+
+function Button({ onClick }: { onClick?: () => void }) {
+  const handleClick = () => console.log("Internal handler");
+  const trackAnalytics = () => console.log("Track click");
+  
+  return (
+    <button onClick={chain(handleClick, trackAnalytics, onClick)}>
+      Click me
+    </button>
+  );
+}
+// All three handlers execute on click (onClick safely ignored if undefined)
+```
+
+
+
+## Installation
+
+
+        **Add to your lib/utils.ts file**
+        ```tsx
+        export function chain(...callbacks: any[]): (...args: any[]) => void {
+          return (...args: any[]) => {
+            for (let callback of callbacks) {
+              if (typeof callback === "function") {
+                callback(...args);
+              }
+            }
+          };
+        }
+        ```

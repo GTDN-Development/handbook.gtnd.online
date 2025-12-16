@@ -1,6 +1,53 @@
 ---
 title: "Cn"
-description: "Lorem ipsum dolor"
+description: "A utility for constructing className strings conditionally. Also serves as a faster & smaller drop-in replacement for the classnames module."
+highlight: true
 ---
+
+The `cn` function combines two powerful utilities:
+
+1. **`clsx`**: Handles conditional class names and various input formats
+2. **`twMerge`**: Intelligently merges Tailwind CSS classes, resolving conflicts
+
+
+## Usage
+```tsx
+import { cn } from "@/lib/utils";
+
+function YourFunction({ className }) {
+  return (
+    <div
+      className={cn(
+        "flex items-start gap-2",
+        className
+      )}
+    >
+      Lorem ipsum dolor
+    </div>
+  );
+}
+```
+
+## Installation
+
+```tsx
+npm install clsx tailwind-merge
+```
+
+
+```tsx
+import React from "react";
+import { clsx, type ClassValue } from "clsx";
+import { twMerge } from "tailwind-merge";
+
+export function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs));
+}
+```
+
+
+
+
+
 
 Lorem ipsum dolor
