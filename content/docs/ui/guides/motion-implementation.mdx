@@ -1,6 +1,87 @@
 ---
 title: "Motion implementation"
-description: "Lorem ipsum dolor"
+description: "A provider component that sets configuration options for all child motion components and sets default reduced motion settings"
+highlight: true
 ---
 
-## Motion implementation
+import { Step, Steps } from "fumadocs-ui/components/steps";
+
+The `MotionProvider` wraps your application to configure all motion components in one place. It automatically respects user accessibility preferences - when users enable "Reduce motion" in their operating system settings, all animations are automatically reduced or disabled.
+
+This improves accessibility for users with vestibular disorders or motion sensitivity who may experience discomfort from animations.
+
+## Installation
+
+<Steps>
+<Step>
+**Install the dependencies**
+
+```bash
+npm install motion@latest
+```
+</Step>
+
+<Step>
+**Create the component file**
+
+```bash
+touch src/components/ui/motion-provider.tsx
+```
+</Step>
+
+<Step>
+**Copy & paste the source code**
+
+<include cwd lang="tsx" meta='title="components/motion-provider.tsx"'>
+    src/registry/v2/ui/motion-provider.tsx
+</include>
+
+Update the import paths to match your project setup.
+</Step>
+
+<Step>
+**Import and use it in your providers component**
+
+```tsx title="components/providers.tsx"
+"use client";
+
+import { MotionProvider } from "@/components/motion-provider";
+import { ThemeProvider } from "next-themes";
+import { usePathname } from "next/navigation";
+import { createContext, useEffect, useRef } from "react";
+
+export const AppContext = createContext<{ previousPathname?: string }>({});
+
+function usePrevious<T>(value: T) {
+  const ref = useRef<T>(undefined);
+
+  useEffect(() => {
+    ref.current = value;
+  }, [value]);
+
+  return ref.current;
+}
+
+export function Providers({ children }: { children: React.ReactNode }) {
+  const pathname = usePathname();
+  const previousPathname = usePrevious(pathname);
+
+  return (
+    <AppContext.Provider value={{ previousPathname: previousPathname ?? undefined }}>
+      <ThemeProvider defaultTheme="system" attribute="class">
+        <MotionProvider>
+          {children}
+        </MotionProvider>
+      </ThemeProvider>
+    </AppContext.Provider>
+  );
+}
+```
+</Step>
+</Steps>
+
+## Usage
+
+The `MotionProvider` component can be used to set configuration options for all child motion components. We use it to provide reduced motion settings on top of the standard implementation.
+
+For more information about the available configuration options, visit the [Motion documentation](https://motion.dev/docs/react-motion-config).
