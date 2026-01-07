@@ -1,6 +1,68 @@
 ---
 title: "Get valid children"
-description: "Lorem ipsum dolor"
+description: "The getValidChildren function filters React children to return only valid React elements, removing invalid values like booleans, null, or undefined."
+highlight: true
 ---
 
-Lorem ipsum dolor
+import { Step, Steps } from "fumadocs-ui/components/steps";
+import {TypeTable, TypeTableProps } from "fumadocs-ui/components/type-table";
+
+
+
+## Usage
+
+```tsx
+import { getValidChildren } from "@/lib/utils";
+```
+
+```tsx
+import { getValidChildren } from "@/lib/utils";
+
+function TabList({ children }: { children: React.ReactNode }) {
+  const validChildren = getValidChildren(children);
+  
+  return (
+    <div>
+      {validChildren.map((child, index) => (
+        <div key={index}>{child}</div>
+      ))}
+    </div>
+  );
+}
+```
+
+## Installation
+
+<Steps>
+<Step>
+**Create your lib/utils.ts file**
+
+```bash
+touch src/lib/utils.ts
+```
+</Step>
+
+<Step>
+**Copy & paste the source code to your lib/utils.ts file**
+
+```tsx title="lib/utils.ts"
+import React from "react";
+
+export function getValidChildren(children: React.ReactNode) {
+  return React.Children.toArray(children).filter(React.isValidElement);
+}
+```
+</Step>
+</Steps>
+
+## API Reference
+
+<TypeTable
+  type={{
+    children: {
+      description: "React children to filter",
+      type: "React.ReactNode",
+      required: true,
+    },
+  }}
+/>

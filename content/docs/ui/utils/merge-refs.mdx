@@ -1,6 +1,48 @@
 ---
 title: "Merge refs"
-description: "Lorem ipsum dolor"
+description: "The mergeRefs function allows you to attach multiple refs to the same DOM element. This is useful when you need both a forwarded ref (from parent) and an internal ref (for your component's logic)"
+highlight: true
 ---
 
-Lorem ipsum dolor
+import { Step, Steps } from "fumadocs-ui/components/steps";
+import { mergeRefs } from "@/lib/merge-refs";
+
+
+## Usage
+
+```tsx
+import { mergeRefs } from "@/lib/merge-refs";
+```
+
+```tsx
+import { forwardRef, useRef } from "react";
+import { mergeRefs } from "@/lib/merge-refs";
+
+const Input = forwardRef<HTMLInputElement>((props, forwardedRef) => {
+  const internalRef = useRef<HTMLInputElement>(null);
+  
+  return <input ref={mergeRefs(internalRef, forwardedRef)} {...props} />;
+});
+```
+
+## Installation
+
+<Steps>
+<Step>
+**Create the utility file**
+
+```bash
+touch src/lib/merge-refs.ts
+```
+</Step>
+
+<Step>
+**Copy & paste the source code**
+
+<include cwd lang="tsx" meta='title="lib/merge-refs.ts"'>
+    src/lib/merge-refs.ts
+</include>
+
+Update the import paths to match your project setup.
+</Step>
+</Steps>

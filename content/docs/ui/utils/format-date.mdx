@@ -1,6 +1,109 @@
 ---
 title: "Format date"
-description: "Lorem ipsum dolor"
+description: "The formatDate function formats dates using the Intl.DateTimeFormat API with customizable language and formatting options"
+highlight: true
 ---
 
-Lorem ipsum dolor
+import { Step, Steps } from "fumadocs-ui/components/steps";
+import { TypeTable } from "fumadocs-ui/components/type-table";
+
+
+## Usage
+
+```tsx
+import { formatDate } from "@/lib/utils";
+```
+
+```tsx
+// Basic usage with default Czech locale
+formatDate(new Date()); // "25. pro 2024"
+
+// With custom language
+formatDate(new Date(), "en-US"); // "Dec 25, 2024"
+
+// With custom options
+formatDate(new Date(), "cs-CZ", { 
+  year: "numeric", 
+  month: "long", 
+  day: "numeric" 
+}); // "25. prosince 2024"
+
+// Works with date strings too
+formatDate("2024-12-25"); // "25. pro 2024"
+```
+
+## Installation
+
+<Steps>
+<Step>
+**Create your lib/utils.ts file**
+
+```bash
+touch src/lib/utils.ts
+```
+</Step>
+
+<Step>
+**Copy & paste the source code to your lib/utils.ts file**
+
+```tsx title="lib/utils.ts"
+export function formatDate(
+  date: Date | string,
+  language: string = "cs-CZ",
+  options?: Intl.DateTimeFormatOptions
+): string {
+  return new Date(date).toLocaleDateString(
+    language,
+    options || { year: "numeric", month: "short", day: "numeric" }
+  );
+}
+```
+</Step>
+</Steps>
+
+## API Reference
+
+### Parameters
+
+<TypeTable
+  type={{
+    date: {
+      description: "The date to format (can be a Date object or date string)",
+      type: "Date | string",
+      required: true,
+    },
+    language: {
+      description: "Locale string for formatting (e.g., 'en-US', 'cs-CZ', 'de-DE')",
+      type: "string",
+      default: '"cs-CZ"',
+    },
+    options: {
+      description: "Intl.DateTimeFormatOptions object for custom formatting. See Format Options below.",
+      type: "Intl.DateTimeFormatOptions",
+      default: '{ year: "numeric", month: "short", day: "numeric" }',
+    },
+  }}
+/>
+
+### Format Options
+
+<TypeTable
+  type={{
+    year: {
+      description: "Year format",
+      type: "\"numeric\" | \"2-digit\"",
+    },
+    month: {
+      description: "Month format",
+      type: "\"numeric\" | \"2-digit\" | \"long\" | \"short\" | \"narrow\"",
+    },
+    day: {
+      description: "Day format",
+      type: "\"numeric\" | \"2-digit\"",
+    },
+    weekday: {
+      description: "Weekday format",
+      type: "\"long\" | \"short\" | \"narrow\"",
+    },
+  }}
+/>

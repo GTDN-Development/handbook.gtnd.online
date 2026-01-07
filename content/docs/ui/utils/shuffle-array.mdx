@@ -1,6 +1,64 @@
 ---
 title: "Shuffle array"
-description: "Lorem ipsum dolor"
+description: "The shuffleArray function randomly shuffles array items using the Fisher-Yates algorithm. It returns a new shuffled array without modifying the original."
+highlight: true
 ---
 
-Lorem ipsum dolor
+import { Step, Steps } from "fumadocs-ui/components/steps";
+import { TypeTable, TypeTableProps } from "fumadocs-ui/components/type-table";
+
+
+## Usage
+
+```tsx
+import { shuffleArray } from "@/lib/utils";
+```
+
+```tsx
+import { shuffleArray } from "@/lib/utils";
+
+const items = [1, 2, 3, 4, 5];
+const shuffled = shuffleArray(items);
+
+console.log(items);    // [1, 2, 3, 4, 5] - original unchanged
+console.log(shuffled); // [3, 1, 5, 2, 4] - randomized order
+```
+
+## Installation
+
+<Steps>
+<Step>
+**Create your lib/utils.ts file**
+
+```bash
+touch src/lib/utils.ts
+```
+</Step>
+
+<Step>
+**Copy & paste the source code to your lib/utils.ts file**
+
+```tsx title="lib/utils.ts"
+export function shuffleArray<T>(array: T[]): T[] {
+  const shuffled = [...array];
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+  return shuffled;
+}
+```
+</Step>
+</Steps>
+
+## API Reference
+
+<TypeTable
+  type={{
+    array: {
+      description: "Array to shuffle",
+      type: "T[]",
+      required: true,
+    },
+  }}
+/>

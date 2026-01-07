@@ -1,6 +1,60 @@
 ---
 title: "Wait"
-description: "Lorem ipsum dolor"
+description: "The wait function creates a delay that can be used with async/await to pause execution for a specified duration"
+highlight: true
 ---
 
-Lorem ipsum dolor
+import { Step, Steps } from "fumadocs-ui/components/steps";
+import { TypeTable, TypeTableProps } from "fumadocs-ui/components/type-table";
+
+## Usage
+
+```tsx
+import { wait } from "@/lib/utils";
+```
+
+```tsx
+import { wait } from "@/lib/utils";
+
+async function showNotification() {
+  console.log("Notification shown");
+  
+  await wait(3000); // Wait 3 seconds
+  
+  console.log("Notification hidden");
+}
+```
+
+## Installation
+
+<Steps>
+<Step>
+**Create your lib/utils.ts file**
+
+```bash
+touch src/lib/utils.ts
+```
+</Step>
+
+<Step>
+**Copy & paste the source code to your lib/utils.ts file**
+
+```tsx title="lib/utils.ts"
+export function wait(duration: number) {
+  return new Promise((resolve) => setTimeout(resolve, duration));
+}
+```
+</Step>
+</Steps>
+
+## API Reference
+
+<TypeTable
+  type={{
+    duration: {
+      description: "Delay duration in milliseconds",
+      type: "number",
+      required: true,
+    },
+  }}
+/>
