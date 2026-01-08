@@ -1,6 +1,213 @@
 ---
-title: "Overview"
-description: "Lorem ipsum dolor"
+title: "Usage of i18n"
+description: "Jak implementovat překlady v komponentách"
 ---
 
-Lorem ipsum dolor
+import { Step, Steps } from "fumadocs-ui/components/steps";
+
+## Basic Rules  
+
+**Pages :** All routes must be in the `src/app/[locale]/` directory.
+**Links :** Always use our custom component `<Link />`, never `<a>` or `<next/link>`.
+**Client vs Server:** Server components use `getTranslations`, Client components `useTranslations`.
+
+## 
+## Usage of Links
+
+```tsx
+import { Link } from "@/components/Link"; 
+
+export default function Nav() {
+  return (
+    <>
+      <Link href="/">Domů</Link>
+      <Link href="/products" locale="en">Products (Force EN)</Link>
+    </>
+  );
+}
+```
+ ## Client Components
+In client components (e.g. forms, modals) use hook useTranslations.
+
+
+```tsx
+"use client";
+import { useTranslations } from "next-intl";
+import { Button } from "@/components/Button";
+
+export default function CtaButton() {
+  const t = useTranslations("common.navbar");
+
+  return <Button>{t("cta")}</Button>; 
+}
+```
+
+## Structure of JSON files
+Translations are stored in messages/*.json. Follow the established structure:
+
+
+
+## Language switchers
+
+## Locale Select
+
+<Steps>
+<Step>
+**Create the component file**
+```bash
+touch src/components/ui/locale-select.tsx
+```
+</Step>
+<Step>
+**Copy & paste the source code**
+
+```tsx
+"use client";
+
+import { routing } from "@/i18n/routing";
+import { useLocale, useTranslations } from "next-intl";
+import { Locale, usePathname, useRouter } from "@/i18n/routing";
+import { useParams } from "next/navigation";
+import { ChangeEvent, useTransition } from "react";
+import { Select } from "@/components/select";
+import clsx from "clsx";
+
+export default function LocaleSelect({ className = "" }: { className?: string }) {
+  const t = useTranslations("locales");
+  const locale = useLocale();
+
+  return (
+    <LocaleSelectInput defaultValue={locale} className={className}>
+      {routing.locales.map((cur) => (
+        <option key={cur} value={cur}>
+          {t("locale", { locale: cur })}
+        </option>
+      ))}
+    </LocaleSelectInput>
+  );
+}
+
+function LocaleSelectInput({
+  defaultValue,
+  children,
+  className,
+}: {
+  defaultValue: string;
+  className?: string;
+  children: React.ReactNode;
+}) {
+  const router = useRouter();
+  const [isPending, startTransition] = useTransition();
+  const pathname = usePathname();
+  const params = useParams();
+
+  function onSelectChange(event: ChangeEvent<HTMLSelectElement>) {
+    const nextLocale = event.target.value as Locale;
+    startTransition(() => {
+      router.replace(
+        // @ts-expect-error -- TypeScript will validate that only known `params`
+        // are used in combination with a given `pathname`. Since the two will
+        // always match for the current route, we can skip runtime checks.
+        { pathname, params },
+        { locale: nextLocale }
+      );
+    });
+  }
+
+  return (
+    <Select
+      defaultValue={defaultValue}
+      disabled={isPending}
+      onChange={onSelectChange}
+      className={clsx("shrink-0", className)}
+    >
+      {children}
+    </Select>
+  );
+}
+```
+</Step>
+
+</Steps>
+
+
+## Locale Button
+<Steps>
+<Step>
+**Create the component file**
+
+```bash
+touch src/components/ui/locale-button.tsx
+```
+</Step>
+<Step>
+**Copy & paste the source code**
+
+```tsx
+"use client";
+
+import { routing } from "@/i18n/routing";
+import { useLocale, useTranslations } from "next-intl";
+import { Locale, usePathname, useRouter } from "@/i18n/routing";
+import { useParams } from "next/navigation";
+import { useTransition } from "react";
+import { ButtonIcon } from "@/components/button-icon";
+import {
+  Dropdown,
+  DropdownButton,
+  DropdownMenu,
+  DropdownItem,
+  DropdownSection,
+} from "@/components/dropdown";
+import clsx from "clsx";
+
+export default function LocaleSelectButton({ className = "" }: { className?: string }) {
+  const t = useTranslations("locales");
+  const locale = useLocale();
+  const router = useRouter();
+  const [isPending, startTransition] = useTransition();
+  const pathname = usePathname();
+  const params = useParams();
+
+  function onSelectLocale(nextLocale: Locale) {
+    startTransition(() => {
+      router.replace(
+        // @ts-expect-error -- TypeScript will validate that only known `params`
+        // are used in combination with a given `pathname`. Since the two will
+        // always match for the current route, we can skip runtime checks.
+        { pathname, params },
+        { locale: nextLocale }
+      );
+    });
+  }
+
+  // Get the display text for current locale (e.g., "CZ", "EN", etc.)
+  const currentLocaleDisplay = locale.toUpperCase();
+
+  return (
+    <Dropdown>
+      <DropdownButton
+        as={ButtonIcon}
+        variant="white"
+        size="lg"
+        aria-label={t("locale", { locale })}
+        disabled={isPending}
+        className={clsx("uppercase", className)}
+      >
+        {currentLocaleDisplay}
+      </DropdownButton>
+      <DropdownMenu anchor="bottom end">
+        <DropdownSection>
+          {routing.locales.map((cur) => (
+            <DropdownItem key={cur} onClick={() => onSelectLocale(cur)}>
+              {t("locale", { locale: cur })}
+            </DropdownItem>
+          ))}
+        </DropdownSection>
+      </DropdownMenu>
+    </Dropdown>
+  );
+}
+```
+</Step>
+</Steps>

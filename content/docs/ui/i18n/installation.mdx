@@ -1,0 +1,397 @@
+---
+title: "i18n installation"
+description: "Internationalization (i18n) with next-intl in Next.js App Router applications"
+highlight: true
+---
+
+import { Step, Steps } from "fumadocs-ui/components/steps";
+import { Tab, Tabs } from "fumadocs-ui/components/tabs";
+
+
+## Installation
+
+<Steps>
+  <Step>
+    **Install the packages**
+
+    ```bash
+    npm install next-intl
+    ```
+  </Step>
+
+  <Step>
+    **Create the directory structure**
+    ```bash
+    mkdir -p src/i18n messages src/components/layout
+    touch src/i18n/routing.ts src/i18n/request.ts src/middleware.ts
+    touch messages/cs.json messages/en.json
+    touch src/config.ts src/app/sitemap.ts
+    touch src/components/layout/providers.tsx src/components/layout/layout-root.tsx
+    ```
+  </Step>
+
+  <Step>
+    **Configure routing**
+
+    Define supported languages (en, cs, others..).
+
+   ```tsx
+ import { createNavigation } from "next-intl/navigation";
+ import { defineRouting } from "next-intl/routing";
+
+  export const routing = defineRouting({
+  locales: ["cs", "en"],
+  defaultLocale: "cs",
+  });
+
+  // export type Pathnames = keyof typeof routing.pathnames;
+  export type Locale = (typeof routing.locales)[number];
+
+  export const { Link, getPathname, redirect, usePathname, useRouter } = createNavigation(routing);
+   ```
+  </Step>
+
+  <Step>
+    **Configure request**
+    Renders translations based on the locale.
+   
+   ```tsx
+    import { getRequestConfig } from "next-intl/server";
+    import { routing } from "./routing";
+
+    export default getRequestConfig(async ({ requestLocale }) => {
+    // This typically corresponds to the `[locale]` segment
+    let locale = await requestLocale;
+
+    // Ensure that a valid locale is used
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    if (!locale || !routing.locales.includes(locale as any)) {
+    locale = routing.defaultLocale;
+  }
+  
+    return {
+    locale,
+    messages: (await import(`../../messages/${locale}.json`)).default,
+  };
+  });
+    ```
+    
+  </Step>
+
+  <Step>
+    **Middleware**
+```tsx
+import createMiddleware from "next-intl/middleware";
+import { routing } from "./i18n/routing";
+
+export default createMiddleware(routing);
+
+export const config = {
+  // Match only internationalized pathnames
+  matcher: ["/", "/(cs|en)/:path*"],
+};
+
+```
+        
+  </Step>
+
+  <Step>
+    **Next.js Config**
+
+    ```tsx title="next.config.ts"
+    import createNextIntlPlugin from 'next-intl/plugin';
+
+    const withNextIntl = createNextIntlPlugin('./src/i18n/request.ts');
+
+    export default withNextIntl(nextConfig);
+    ```
+  </Step>
+
+  <Step>
+    **Global Providers**
+
+    Wrapper for all React Contexts in your application. Customize according to your needs.
+
+    ```tsx title="src/components/layout/providers.tsx"
+    "use client";
+
+    export function Providers({ children }: { children: React.ReactNode }) {
+      return (
+        <>
+          {/* Here wrap children with your providers (UserContext, ThemeProvider, etc.) */}
+          {children}
+        </>
+      );
+    }
+    ```
+  </Step>
+
+  <Step>
+    **Root Layout**
+
+    This component holds `<html>`, fonts, and `NextIntlClientProvider` .
+
+  ```tsx title="src/layout/layout-root.tsx"
+import { routing } from "@/i18n/routing";
+import { NextIntlClientProvider } from "next-intl";
+import { getMessages } from "next-intl/server";
+import { Geist_Mono, Plus_Jakarta_Sans } from "next/font/google";
+import { notFound } from "next/navigation";
+import { Providers } from "@/components/layout/providers";
+// import { GoogleTagManager } from "@next/third-parties/google";
+// import { GoogleAnalytics } from "@next/third-parties/google";
+// import { isBrowser } from "./utils";
+
+const plusJakartaSans = Plus_Jakarta_Sans({
+  variable: "--font-plus-jakarta-sans",
+  subsets: ["latin"],
+});
+
+const geistMono = Geist_Mono({
+  variable: "--font-geist-mono",
+  subsets: ["latin"],
+});
+
+export default async function LayoutRoot({
+  children,
+  locale,
+}: Readonly<{
+  children: React.ReactNode;
+  locale: string;
+}>) {
+  const messages = await getMessages();
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  if (!routing.locales.includes(locale as any)) {
+    return notFound();
+  }
+
+  return (
+  <html
+    lang={locale}
+    suppressHydrationWarning
+    className={`${plusJakartaSans.variable} ${geistMono.variable}`}
+  >
+    <body
+      className="text-dark-blue-950 scroll-pt-16 overflow-x-clip scroll-smooth bg-gray-50 font-sans antialiased"
+      suppressHydrationWarning
+    >
+      <div className="relative isolate">
+        <NextIntlClientProvider messages={messages}>
+          <Providers>{children}</Providers>
+        </NextIntlClientProvider>
+      </div>
+
+      {/* Fixed elements that should be visible on all pages */}
+      <TailwindScreen />
+    </body>
+  </html>
+  );
+}
+
+function TailwindScreen() {
+  if (process.env.NODE_ENV === "production") return null;
+
+  return (
+    <div className="fixed bottom-16 left-5 z-99999 flex size-9 items-center justify-center rounded-full bg-[#282828] text-xs font-bold text-[#fff] uppercase inset-ring-1 inset-ring-current/15 dark:bg-black">
+      <div className="sm:hidden">-</div>
+      <div className="hidden sm:block md:hidden">sm</div>
+      <div className="hidden md:block lg:hidden">md</div>
+      <div className="hidden lg:block xl:hidden">lg</div>
+      <div className="hidden xl:block 2xl:hidden">xl</div>
+      <div className="hidden 2xl:block">2xl</div>
+    </div>
+  );
+}
+
+```
+  </Step>
+
+  <Step>
+    **Locale Layout (App Entry)**
+
+    Main entry point. It solves **SEO** and static generation.
+
+    ```tsx title="src/app/[locale]/layout.tsx"
+    import LayoutRoot from "@/components/layout/layout-root";
+    import { Locale, routing } from "@/i18n/routing";
+    import type { Metadata } from "next";
+    import { getTranslations, setRequestLocale } from "next-intl/server";
+    import { notFound } from "next/navigation";
+
+    type LayoutProps = { children: React.ReactNode; params: Promise<{ locale: string }> };
+
+    export function generateStaticParams() {
+      return routing.locales.map((locale) => ({ locale }));
+    }
+
+    export async function generateMetadata(props: Omit<LayoutProps, "children">): Promise<Metadata> {
+      const params = await props.params;
+      const { locale } = params;
+      const t = await getTranslations({ locale, namespace: "seo.HomePage" });
+
+      const title = t("title");
+      const description = t("description");
+      const siteName = t("siteName");
+
+      return {
+        metadataBase: new URL("https://www.your-website.com"),
+        title: { default: title, template: `%s | ${siteName}` },
+        description,
+        robots: { index: true, follow: true },
+        alternates: {
+          canonical: `https://www.your-website.com/${locale}`,
+          languages: {
+            cs: "https://your-website.com/cs",
+            en: "https://your-website.com/en",
+          },
+        },
+        openGraph: {
+          title, description, type: "website", locale: locale === "cs" ? "cs_CZ" : "en_US", siteName,
+          images: [{ url: "/og-default.jpg", width: 1200, height: 630, alt: title }],
+        },
+        authors: [{ name: "gtdn.online", url: "https://www.gtdn.online/" }],
+      };
+    }
+
+    export default async function LocaleLayout(props: LayoutProps) {
+      const params = await props.params;
+      const { locale } = params;
+      const { children } = props;
+
+      if (!routing.locales.includes(locale as Locale)) notFound();
+      
+      setRequestLocale(locale); 
+      return (
+        <LayoutRoot locale={locale}>
+          {children}
+        </LayoutRoot>
+      );
+    }
+    ```
+  </Step>
+ 
+
+  <Step>
+    **Root Redirect**
+
+    It ensures that the root domain (`/`) is redirected to the default or preferred language (here hardcoded to `/cs`).
+
+    ```tsx title="src/app/page.tsx"
+    import { redirect } from "next/navigation";
+
+    // This page only renders when the app is built statically (output: 'export')
+    // nebo na root URL (/)
+    export default function RootPage() {
+      redirect("/cs");
+    }
+    ```
+  </Step>
+
+  <Step>
+    **Sitemap**
+
+    generate sitemap.
+
+     ```tsx
+   import { host } from "@/config";
+import { Locale, getPathname, routing } from "@/i18n/routing";
+import { MetadataRoute } from "next";
+
+export default function sitemap(): MetadataRoute.Sitemap {
+  return [getEntry("/"), getEntry("/pathnames")];
+}
+
+type Href = Parameters<typeof getPathname>[0]["href"];
+
+function getEntry(href: Href) {
+  return {
+    url: getUrl(href, routing.defaultLocale),
+    alternates: {
+      languages: Object.fromEntries(
+        routing.locales.map((locale) => [locale, getUrl(href, locale)])
+      ),
+    },
+  };
+}
+
+function getUrl(href: Href, locale: Locale) {
+  const pathname = getPathname({ locale, href });
+  return host + pathname;
+}
+
+   ```
+  </Step>
+  <Step>
+    **Update your config.ts file**
+
+    ```tsx title="src/config.ts"
+   export const host =
+  process.env.NEXT_PUBLIC_SITE_URL || "https://www.your-website.com";
+    ```
+  </Step>
+
+<Step>
+**Creating New Page**
+
+Every page has to call `setRequestLocale` for static site generation.
+
+```tsx title="src/app/[locale]/page.tsx"
+import { setRequestLocale } from "next-intl/server";
+import { getTranslations } from "next-intl/server";
+import type { Metadata } from "next";
+
+type Props = {
+  params: Promise<{ locale: string }>;
+};
+
+// 1. SEO Metadata
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "seo.HomePage" });
+  return { title: t("title"), description: t("description") };
+}
+
+// 2. Page Component
+export default async function HomePage(props: Props) {
+  const { locale } = await props.params;
+
+  // Must for Static Site Generation
+  setRequestLocale(locale);
+
+  const t = await getTranslations({ locale, namespace: "seo.HomePage" });
+
+  return (
+    <div>
+      <h1>{t("title")}</h1>
+    </div>
+  );
+}
+
+```
+</Step>
+
+<Step>
+**Update your translations.json file**
+
+```json title="messages/cs.json"
+{
+  "locales": {
+    "label": "Vyberte jazyk",
+    "locale": "..."
+  },
+  "common": {
+    "navigation": {},
+    "footer": {}
+  },
+  "seo": {
+    "HomePage": {
+      "title": "vaše stránka - Domovská stránka",
+      "description": "Vítejte na vašem webu",
+      "siteName": "Website name"
+    }
+  }
+}
+```
+</Step>
+</Steps>
