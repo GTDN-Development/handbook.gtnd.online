@@ -28,7 +28,7 @@ import { Container } from "@/components/ui/container";
         **Install dependencies**
 
         ```bash
-        npm install radix-ui
+        npm install @radix-ui/react-slot class-variance-authority
         ```
     </Step>
     <Step>
@@ -54,12 +54,12 @@ import { Container } from "@/components/ui/container";
 <TypeTable
     type={{
     size: {
-        type: '"sm" | "default" | "lg" | "prose" | "fluid"',
-        description: ' width variants of the container',
+        type: '"sm" | "md" | "lg" | "xl" | "2xl" | "prose" | "default"',
+        description: 'Width variants of the container. "sm" = 640px, "md" = 768px, "lg" = 1024px, "xl" = 1280px, "2xl" = 1536px, "prose" = 65ch, "default" = 1536px (2xl)',
     },
     asChild: {
         type: 'boolean',
-        description: 'You can render container as a child element',
+        description: 'Render as a child element using Radix UI Slot',
     },
     className: {
         type: 'string',
