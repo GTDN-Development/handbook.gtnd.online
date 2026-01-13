@@ -28,7 +28,7 @@ import { Container } from "@/components/ui/container";
         **Install dependencies**
 
         ```bash
-        npm install @radix-ui/react-slot class-variance-authority
+        npm install radix-ui
         ```
     </Step>
     <Step>
@@ -55,7 +55,7 @@ import { Container } from "@/components/ui/container";
     type={{
     size: {
         type: '"sm" | "md" | "lg" | "xl" | "2xl" | "prose" | "default"',
-        description: 'Width variants of the container. "sm" = 640px, "md" = 768px, "lg" = 1024px, "xl" = 1280px, "2xl" = 1536px, "prose" = 65ch, "default" = 1536px (2xl)',
+        description: 'Width variants of the container based on Tailwind CSS breakpoint (screen) sizes. "sm" = 640px, "md" = 768px, "lg" = 1024px, "xl" = 1280px, "2xl" = 1536px, "prose" = 65ch, "default" = 1536px (2xl)',
     },
     asChild: {
         type: 'boolean',

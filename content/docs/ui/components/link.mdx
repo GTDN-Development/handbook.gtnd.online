@@ -1,36 +1,80 @@
 ---
 title: "Link"
-description: "Link component"
+description: "A reusable Link wrapper for consistent behavior across your app"
 highlight: true
 ---
 
 import { Step, Steps } from "fumadocs-ui/components/steps";
 
+## Why Wrap a Link Component?
+
+You might think **"Why create our own Link component when we can just use Next.js Link directly?"**
+
+Great question, you skeptic! Here's why:
+
+- **Future-Proof** - Today it's just a wrapper. Tomorrow you might want to add custom styling, some data attribute, analytics tracking, or global link behavior. Change it once, apply it everywhere.
+
+- **Single Point of Control** - When Next.js updates and changes their Link API, you'll update one file instead of hunting through your entire codebase.
+
+- **Testing Made Easy** - Mock all links in one place. Add data attributes for E2E testing globally. Need `rel="noopener"` on external links? One file.
+
+- **Framework Migration** - Switching frameworks? Change the internals of one component instead of finding every `next/link` import across your project.
+
+- **Team Consistency** - Everyone uses the same Link component with the same behavior. No more wondering why different parts of the app handle links differently.
+
+Trust me, it's worth it! **Fanda**
+
 ## Installation
 
-<Steps>
-    <Step>
-        **Create a source file**
-        ```bash
-        touch src/components/ui/link.tsx
-        ```
-    </Step>
-    <Step>
-        **Copy & Paste the source code**
-        ```tsx
-        import NextLink from "next/link";
-        import type { Route } from "next";
-        
-        type NextLinkProps = React.ComponentProps<typeof NextLink>;
-        
-        export type LinkProps<T extends string = string> = Omit<NextLinkProps, "href"> & {
-          href: Route<T> | URL;
-        };
-        
-        export function Link<T extends string = string>(props: LinkProps<T>) {
-          return <NextLink {...props} />;
-        }
+**Create a source file**
+```bash
+touch src/components/ui/link.tsx
+```
 
-        ```
-    </Step>
-</Steps>
+Use one of the following examples
+
+## Examples
+
+### Next.js - with typed routes
+
+```tsx
+import NextLink from "next/link";
+import type { Route } from "next";
+
+type NextLinkProps = React.ComponentProps<typeof NextLink>;
+
+export type LinkProps<T extends string = string> = Omit<NextLinkProps, "href"> & {
+  href: Route<T> | URL;
+};
+
+export function Link<T extends string = string>(props: LinkProps<T>) {
+  return <NextLink {...props} />;
+}
+```
+
+### Next.js - without typed routes
+
+```tsx
+import NextLink, { type LinkProps as NextLinkProps } from "next/link";
+
+export type LinkProps = NextLinkProps &
+  Omit<React.AnchorHTMLAttributes<HTMLAnchorElement>, keyof NextLinkProps>;
+
+export function Link(props: LinkProps) {
+  return <NextLink {...props} />;
+}
+```
+
+### Next.js & next-intl - withou typed routes
+
+```tsx
+import { Link as NextLink } from "@/i18n/routing";
+
+type NextLinkProps = React.ComponentPropsWithoutRef<typeof NextLink>;
+
+export type LinkProps = NextLinkProps & React.ComponentPropsWithoutRef<"a">;
+
+export function Link(props: LinkProps) {
+  return <NextLink {...props} />;
+}
+```

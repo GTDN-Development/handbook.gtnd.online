@@ -1,0 +1,166 @@
+---
+title: "Copy button"
+description: "A button component that copies text to clipboard with visual feedback"
+highlight: true
+---
+
+import { Step, Steps } from "fumadocs-ui/components/steps";
+import { TypeTable } from "fumadocs-ui/components/type-table";
+import { Example } from "@/components/example";
+import { CopyButtonBasic, CopyButtonWithRenderProp } from "@/registry/v2/examples/copy-button-examples";
+
+<Example>
+  <CopyButtonBasic />
+</Example>
+
+## Usage
+
+```tsx
+import { CopyButton } from "@/components/ui/copy-button";
+```
+
+### Basic example
+
+```tsx
+<CopyButton toCopy="hello@example.com" onClick={() => alert("Copied!")}>
+  Copy email
+</CopyButton>
+```
+
+## Installation
+
+<Steps>
+    <Step>
+        **Create the component file**
+
+        ```bash
+        touch src/components/ui/copy-button.tsx
+        ```
+    </Step>
+    <Step>
+        **Copy & paste the source code**
+
+        <include cwd lang="tsx" meta='title="components/ui/copy-button.tsx"'>
+          src/registry/v2/ui/copy-button.tsx
+        </include>
+
+        Update the import paths to match your project setup.
+    </Step>
+</Steps>
+
+## Examples
+
+### Display feedback with render prop
+
+Render props are good, and we expose one called `isCopied` within the `children` prop. You can use this pattern to display different content based on the internal state:
+
+<Example>
+    <CopyButtonWithRenderProp />
+</Example>
+
+```tsx
+<CopyButton toCopy="hello@example.com" className="relative">
+  {({ isCopied }) => (
+    <>
+      <span className={cn(!isCopied ? "visible" : "invisible")}>
+        hello@example.com
+      </span>
+      <span
+        className={cn(
+          "absolute inset-0 flex items-center justify-center",
+          isCopied ? "visible" : "invisible"
+        )}
+      >
+        <CheckIcon aria-hidden="true" className="mr-1 size-[1em]" />
+        Copied!
+      </span>
+    </>
+  )}
+</CopyButton>
+```
+
+### useClipboard hook
+
+For more sophisticated implementations, use the `useClipboard` hook directly:
+
+```tsx
+import { useClipboard } from "@/components/ui/copy-button";
+
+function MyComponent() {
+  const { isCopied, copy } = useClipboard(2000);
+
+  return (
+    <div>
+      <input id="code" value="npm install my-package" readOnly />
+      <button onClick={() => copy(document.getElementById("code").value)}>
+        {isCopied ? "Copied!" : "Copy"}
+      </button>
+    </div>
+  );
+}
+```
+
+## API Reference
+
+### Component Props
+
+The component extends `<button>` and adds the following props:
+
+<TypeTable
+  type={{
+    toCopy: {
+      description: "The text to copy to clipboard",
+      type: "string",
+      required: true,
+    },
+    timeout: {
+      description: "Duration in milliseconds before resetting the copied state",
+      type: "number",
+      default: "2000",
+    },
+    children: {
+      description: "Button content or render function that receives `isCopied` state",
+      type: "React.ReactNode | ((props: CopyButtonRenderProps) => React.ReactNode)",
+    },
+  }}
+/>
+
+#### Render Props
+
+When using `children` as a function, it receives the following props:
+
+<TypeTable
+  type={{
+    isCopied: {
+      description: "Whether the text has been copied to clipboard",
+      type: "boolean",
+    },
+  }}
+/>
+
+### useClipboard Hook
+
+<TypeTable
+  type={{
+    timeout: {
+      description: "Duration in milliseconds before resetting the copied state",
+      type: "number",
+      default: "2000",
+    },
+  }}
+/>
+
+#### Returns
+
+<TypeTable
+  type={{
+    isCopied: {
+      description: "Whether text has been copied to clipboard",
+      type: "boolean",
+    },
+    copy: {
+      description: "Function to copy text to clipboard",
+      type: "(text: string) => void",
+    },
+  }}
+/>
