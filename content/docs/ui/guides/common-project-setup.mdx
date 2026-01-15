@@ -1,6 +1,427 @@
 ---
-title: "Common project setup"
-description: "Lorem ipsum dolor"
+title: "Common Project Setup"
+description: "Complete reference for Next.js 16 with Tailwind CSS 4, shadcn/ui, TypeScript, and React 19"
+highlight: true
 ---
 
-## Common project setup
+import { Step, Steps } from "fumadocs-ui/components/steps";
+
+This guide documents the standard setup used in our projects, covering framework configuration, styling, components, and tooling.
+
+## Framework (Next.js 16)
+
+We use Next.js as our React framework. To install a new Next.js project, follow the [official installation guide](https://nextjs.org/docs/app/getting-started/installation).
+
+After installation, we use this configuration:
+
+```tsx title="next.config.ts"
+import type { NextConfig } from "next";
+
+const nextConfig: NextConfig = {
+  reactStrictMode: true,
+  reactCompiler: true,
+  typedRoutes: true,
+  turbopack: {
+    rules: {
+      "*.svg": {
+        loaders: ["@svgr/webpack"],
+        as: "*.js",
+      },
+    },
+  },
+};
+
+export default nextConfig;
+```
+
+- **`reactStrictMode`** - Enables additional development checks to find bugs early.
+- **`reactCompiler`** - Automatically optimizes re-renders without manual `useMemo` or `useCallback`.
+- **`typedRoutes`** - Provides TypeScript autocompletion and validation for route paths.
+- **`turbopack`** - Next.js's faster Rust-based bundler, configured to handle SVG imports as React components.
+
+## Deployment
+
+For deployments we usually use [Vercel](https://vercel.com/docs). For internal projects, we also run a self-hosted Raspberry Pi server in the office.
+
+## TypeScript
+
+TypeScript adds static type checking to JavaScript, catching errors at compile time rather than runtime. We use strict mode for maximum type safety.
+
+```json title="tsconfig.json"
+{
+  "compilerOptions": {
+    "target": "ES2017",
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "allowJs": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "noEmit": true,
+    "esModuleInterop": true,
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "jsx": "react-jsx",
+    "incremental": true,
+    "plugins": [{ "name": "next" }],
+    "paths": { "@/*": ["./src/*"] }
+  },
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
+  "exclude": ["node_modules"]
+}
+```
+
+## Tailwind CSS
+
+Tailwind CSS is a utility-first CSS framework that lets you style elements directly in your markup. We use Tailwind CSS 4, which is a complete rewrite with CSS-first configuration.
+
+### Installation
+
+<Steps>
+<Step>
+**Install Tailwind CSS and its PostCSS plugin**
+
+```bash
+npm install tailwindcss @tailwindcss/postcss
+```
+</Step>
+
+<Step>
+**Create the PostCSS config file**
+
+```tsx title="postcss.config.mjs"
+const config = {
+  plugins: ["@tailwindcss/postcss"],
+};
+
+export default config;
+```
+</Step>
+
+<Step>
+**Configure globals.css**
+
+```css title="globals.css"
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-border: var(--border);
+  --color-ring: var(--ring);
+  --color-destructive: var(--destructive);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+}
+
+:root {
+  --radius: 0.625rem;
+  --background: oklch(1 0 0);
+  --foreground: oklch(0.145 0 0);
+  --primary: oklch(0.205 0 0);
+  --primary-foreground: oklch(0.985 0 0);
+  --muted: oklch(0.97 0 0);
+  --muted-foreground: oklch(0.556 0 0);
+  --destructive: oklch(0.577 0.245 27.325);
+  --border: oklch(0.922 0 0);
+  --ring: oklch(0.708 0 0);
+}
+
+.dark {
+  --background: oklch(0.145 0 0);
+  --foreground: oklch(0.985 0 0);
+  --primary: oklch(0.922 0 0);
+  --primary-foreground: oklch(0.205 0 0);
+  --muted: oklch(0.269 0 0);
+  --muted-foreground: oklch(0.708 0 0);
+  --destructive: oklch(0.704 0.191 22.216);
+  --border: oklch(1 0 0 / 10%);
+  --ring: oklch(0.556 0 0);
+}
+
+@layer base {
+  * { @apply border-border outline-ring/50; }
+  body { @apply bg-background text-foreground; }
+}
+```
+</Step>
+</Steps>
+
+For merging Tailwind classes, we use the `cn()` utility located in `src/lib/utils.ts`.
+
+For theming, we use OKLCH color space instead of HSL for better perceptual uniformity. Colors are defined as CSS variables with light (`:root`) and dark (`.dark`) mode variants.
+
+### Theme Switching
+
+<Steps>
+<Step>
+**Install next-themes**
+
+```bash
+npm install next-themes
+```
+</Step>
+
+<Step>
+**Create a Providers component**
+
+```tsx title="src/components/layout/providers.tsx"
+"use client";
+
+import { ThemeProvider } from "next-themes";
+
+export function Providers({ children }: { children: React.ReactNode }) {
+  return (
+    <ThemeProvider
+      attribute="class"
+      defaultTheme="system"
+      enableSystem
+      disableTransitionOnChange
+    >
+      {children}
+    </ThemeProvider>
+  );
+}
+```
+</Step>
+
+<Step>
+**Wrap your app in the root layout**
+
+```tsx title="app/layout.tsx"
+import { Providers } from "@/components/layout/providers";
+
+export default function RootLayout({ children }: { children: React.ReactNode }) {
+  return (
+    <html lang="en" suppressHydrationWarning>
+      <body>
+        <Providers>{children}</Providers>
+      </body>
+    </html>
+  );
+}
+```
+</Step>
+
+<Step>
+**Add a theme toggle**
+
+See the [Theme Toggle](/docs/ui/components/theme-toggle) component for a ready-to-use switcher.
+</Step>
+</Steps>
+
+### Spacing Rules
+
+Use `margin-top` for vertical spacing between sections. Inside flex/grid containers, use `gap` utilities instead.
+
+```tsx
+// Sections with margin-top
+<section>First section</section>
+<section className="mt-8">Second section</section>
+
+// Flex/grid with gap
+<div className="flex flex-col gap-4">
+  <section>First</section>
+  <section>Second</section>
+</div>
+```
+
+### Sizing Rules
+
+Always use `size-*` when width and height are equal:
+
+```tsx
+// ✅ Good
+<SomeIcon className="size-4" />
+
+// ❌ Bad
+<SomeIcon className="w-4 h-4" />
+```
+
+## Component System (shadcn/ui)
+
+We use [shadcn/ui](https://ui.shadcn.com) components built on Radix UI primitives. They provide full accessibility, are customizable via CSS variables, and use Class Variance Authority (CVA) for variants.
+
+- [shadcn/ui Components](https://ui.shadcn.com/docs/components) - Full component library
+- [Shadcn Blocks](https://www.shadcnblocks.com/blocks) - Pre-made blocks built with shadcn components
+
+## Icons
+
+We use [Lucide Icons](https://lucide.dev/icons/) for general icons, and our custom [Brand Icons](https://brands-gilt.vercel.app/) library for brand logos.
+
+- All decorative icons **must** have `aria-hidden="true"`
+- Use `size-*` utility for consistent sizing
+- Only omit `aria-hidden` for icons with semantic meaning
+
+## Forms
+
+We use TanStack Form for form state management and Zod for validation.
+
+- [TanStack Form with shadcn/ui](https://ui.shadcn.com/docs/forms/tanstack-form)
+- [React Hook Form alternative](https://ui.shadcn.com/docs/forms/react-hook-form)
+
+### Field Component Anatomy
+
+Use our custom Field components from `@/components/ui/field` for consistent form layouts:
+
+```tsx
+<Field orientation="vertical" data-invalid={isInvalid}>
+  <FieldLabel htmlFor="email">Email *</FieldLabel>
+  <Input {...inputProps} />
+  <FieldDescription>Helper text here</FieldDescription>
+  <FieldError errors={errors} />
+</Field>
+```
+
+### Validation Patterns
+
+```typescript
+// Email
+email: z.string().email("Please enter a valid email address.")
+
+// Phone
+phone: z.string()
+  .min(9, "Phone number must be at least 9 characters.")
+  .regex(/^[+]?[0-9\s\-()]+$/, "Please enter a valid phone number.")
+
+// Required checkbox
+consent: z.boolean().refine(val => val === true, {
+  message: "You must agree to continue.",
+})
+```
+
+## Images
+
+We use `next/image` for rendering images, which provides automatic optimization, lazy loading, and responsive sizing.
+
+For local/static images, we use our custom `StaticImage` component that wraps Next.js Image and automatically extracts dimensions from imported static image data.
+
+```tsx title="src/components/ui/static-image.tsx"
+import type { StaticImageData, ImageProps } from "next/image";
+import Image from "next/image";
+
+type StaticImageProps = Omit<ImageProps, "src"> & {
+  image: StaticImageData;
+};
+
+export function StaticImage({ image, alt, ...props }: StaticImageProps) {
+  return <Image src={image.src} alt={alt} width={image.width} height={image.height} {...props} />;
+}
+```
+
+### SVG as React Components
+
+SVGs are configured to import as React components via @svgr/webpack:
+
+```tsx
+import Logo from "@/assets/svgs/logo.svg";
+
+<Logo className="size-8" aria-hidden="true" />
+```
+
+### Import Paths
+
+- Use `@/` alias for src imports (e.g., `@/components/ui/button`)
+- Use relative imports for same directory (e.g., `./helper-component`)
+
+### Custom Link Component
+
+Always use `Link` from `@/components/ui/link` instead of `next/link` directly. It provides type-safe routing with `typedRoutes: true`. See the [Link component](/docs/ui/components/link) for installation and usage.
+
+## Configuration Management
+
+The `config/` folder is the **single source of truth** for app configuration. Store site metadata, contact info, navigation links, and other settings here instead of hardcoding across components.
+
+```tsx
+import { site } from "@/config/site";
+import { contact } from "@/config/contact";
+import { navLinks } from "@/config/nav-links";
+```
+
+## Accessibility
+
+Common ARIA attributes:
+
+- **`aria-hidden="true"`** - Hides decorative elements from screen readers.
+- **`aria-invalid`** - Tells screen readers the input has a validation error.
+- **`aria-describedby`** - Links an element to its description/error message by ID.
+- **`role="alert"`** - Makes content announce immediately when it appears.
+
+```tsx
+<Input
+  id="email"
+  aria-invalid={hasError}
+  aria-describedby={hasError ? "email-error" : undefined}
+/>
+{hasError && <span id="email-error" role="alert">Invalid email</span>}
+```
+
+## Tooling
+
+### ESLint
+
+ESLint comes pre-configured with Next.js. See [Next.js ESLint docs](https://nextjs.org/docs/app/api-reference/config/eslint) for configuration options.
+
+### Prettier
+
+[Prettier](https://prettier.io/) is used for code formatting.
+
+<Steps>
+<Step>
+**Install Prettier with the Tailwind plugin**
+
+```bash
+npm install -D prettier prettier-plugin-tailwindcss
+```
+</Step>
+
+<Step>
+**Create the config file**
+
+```json title=".prettierrc.json"
+{
+  "semi": true,
+  "trailingComma": "es5",
+  "singleQuote": false,
+  "tabWidth": 2,
+  "printWidth": 100,
+  "plugins": ["prettier-plugin-tailwindcss"],
+  "tailwindFunctions": ["cva", "clsx", "cn", "styles"]
+}
+```
+</Step>
+</Steps>
+
+## Naming Conventions
+
+| Type | Convention | Example |
+|------|------------|---------|
+| Components | PascalCase | `PrimaryButton` |
+| Files | kebab-case | `primary-button.tsx` |
+| Folders | kebab-case | `contact-form/` |
+| Config exports | camelCase | `navLinks`, `siteConfig` |
+
+## Project Structure
+
+```
+src/
+├── app/              # Next.js App Router (pages, layouts, API routes)
+├── assets/           # Static assets (images, svgs)
+├── components/
+│   ├── ui/           # shadcn/ui components
+│   └── layout/       # Layout components (navbar, footer, providers)
+├── config/           # App configuration (site, contact, nav-links)
+├── lib/              # Utility functions (cn, helpers)
+├── styles/           # Global styles (globals.css, prose.css)
+└── types/            # TypeScript type definitions
+```
