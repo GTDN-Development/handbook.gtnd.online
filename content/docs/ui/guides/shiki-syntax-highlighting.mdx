@@ -8,6 +8,20 @@ import { Step, Steps } from "fumadocs-ui/components/steps";
 
 Shiki is a syntax highlighter. This guide covers setting up Shiki with CSS variables in Next.js, allowing you to control syntax colors through your design system.
 
+## Usage
+
+```tsx
+import { highlight } from "@/lib/shiki";
+
+export default async function Page() {
+  const html = await highlight('const message = "Hello, world!";', "ts");
+
+  return <div dangerouslySetInnerHTML={{ __html: html }} />;
+}
+```
+
+
+
 ## Installation
 
 <Steps>
@@ -94,49 +108,9 @@ export async function highlight(code: string, lang: string) {
 Add more languages to the `langs` array as needed. See [Shiki languages](https://shiki.style/languages) for available options.
 </Step>
 
-<Step>
-**Create the CodeBlock component**
 
-```bash
-touch src/components/ui/code-block.tsx
-```
-</Step>
-
-<Step>
-**Copy & paste the component code**
-
-```tsx title="components/ui/code-block.tsx"
-import type { BundledLanguage } from "shiki";
-import { highlight } from "@/lib/shiki";
-
-interface CodeBlockProps {
-  children: string;
-  lang: BundledLanguage;
-}
-
-export async function CodeBlock({ children, lang }: CodeBlockProps) {
-  const html = await highlight(children, lang);
-  return <div dangerouslySetInnerHTML={{ __html: html }} />;
-}
-```
-
-</Step>
 </Steps>
 
-## Usage
 
-```tsx
-import { CodeBlock } from "@/components/ui/code-block";
-
-const code = `
-function greet(name: string) {
-  return "Hello, " + name;
-}
-`;
-
-export default function Page() {
-  return <CodeBlock lang="ts">{code}</CodeBlock>;
-}
-```
 
 For more information, visit the [Shiki documentation](https://shiki.style).
